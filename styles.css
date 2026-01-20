@@ -7,7 +7,7 @@
   gap: 4px;
   padding: 4px 8px;
   border-radius: 16px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -22,7 +22,7 @@
 
 .x-score-badge-icon {
   font-weight: 800;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .x-score-badge-value {
@@ -59,8 +59,8 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 16px;
-  min-width: 280px;
-  max-width: 320px;
+  min-width: 300px;
+  max-width: 360px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: #e7e9ea;
@@ -82,7 +82,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -94,7 +94,7 @@
 }
 
 .x-score-popup-score {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   padding: 4px 12px;
   border-radius: 8px;
@@ -120,27 +120,39 @@
   color: rgb(113, 118, 123);
 }
 
-.x-score-popup-section {
-  margin-bottom: 16px;
-}
-
-.x-score-popup-section:last-of-type {
+/* Verified badge */
+.x-score-verified-badge {
+  background: linear-gradient(135deg, #1d9bf0, #4db5ff);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
   margin-bottom: 12px;
 }
 
+.x-score-popup-section {
+  margin-bottom: 14px;
+}
+
+.x-score-popup-section:last-of-type {
+  margin-bottom: 10px;
+}
+
 .x-score-popup-section-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   color: #71767b;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .x-score-popup-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 .x-score-popup-item {
@@ -153,18 +165,19 @@
 }
 
 .x-score-popup-label {
-  font-size: 12px;
+  font-size: 11px;
   color: #71767b;
 }
 
 .x-score-popup-value {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #e7e9ea;
   font-variant-numeric: tabular-nums;
 }
 
-.x-score-popup-breakdown {
+/* Breakdown list */
+.x-score-breakdown-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -172,29 +185,59 @@
 
 .x-score-breakdown-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  font-size: 12px;
+  gap: 8px;
+  padding: 6px 0;
 }
 
-.x-score-breakdown-item span:first-child {
-  color: #71767b;
+.x-score-breakdown-label {
+  flex: 0 0 140px;
+  font-size: 11px;
+  color: #e7e9ea;
 }
 
-.x-score-breakdown-item span:last-child {
-  color: #00ba7c;
+.x-score-breakdown-bar-container {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.x-score-breakdown-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #1d9bf0, #00ba7c);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+
+.x-score-breakdown-value {
+  flex: 0 0 60px;
+  text-align: right;
+  font-size: 11px;
   font-weight: 600;
+  color: #00ba7c;
   font-variant-numeric: tabular-nums;
+}
+
+/* Formula display */
+.x-score-formula {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(29, 155, 240, 0.1);
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  color: #1d9bf0;
+  text-align: center;
 }
 
 .x-score-popup-footer {
   text-align: center;
-  font-size: 11px;
+  font-size: 10px;
   color: #536471;
-  padding-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -223,24 +266,37 @@
     color: #0f1419;
   }
 
-  .x-score-breakdown-item {
-    background: rgba(0, 0, 0, 0.03);
+  .x-score-breakdown-label {
+    color: #0f1419;
+  }
+
+  .x-score-breakdown-bar-container {
+    background: rgba(0, 0, 0, 0.1);
   }
 
   .x-score-popup-footer {
     border-top-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .x-score-formula {
+    background: rgba(29, 155, 240, 0.08);
   }
 }
 
 /* Responsive adjustments */
 @media (max-width: 500px) {
   .x-score-popup {
-    min-width: 260px;
-    max-width: 290px;
+    min-width: 280px;
+    max-width: 300px;
     padding: 12px;
   }
 
   .x-score-popup-grid {
     grid-template-columns: 1fr;
+  }
+
+  .x-score-breakdown-label {
+    flex: 0 0 120px;
+    font-size: 10px;
   }
 }
