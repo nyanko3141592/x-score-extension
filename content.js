@@ -413,10 +413,20 @@
       if (!popup.contains(e.target) && e.target !== badge) {
         popup.remove();
         document.removeEventListener('click', closePopup);
+        window.removeEventListener('scroll', closeOnScroll);
       }
     };
+
+    // Close on scroll
+    const closeOnScroll = () => {
+      popup.remove();
+      document.removeEventListener('click', closePopup);
+      window.removeEventListener('scroll', closeOnScroll);
+    };
+
     setTimeout(() => {
       document.addEventListener('click', closePopup);
+      window.addEventListener('scroll', closeOnScroll, { passive: true });
     }, 0);
   }
 
