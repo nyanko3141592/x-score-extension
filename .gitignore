@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node (if added later)
+node_modules/
+npm-debug.log
+
+# Build artifacts
+*.zip
+*.crx
+*.pem
+
+# Temporary files
+*.tmp
+*.temp
