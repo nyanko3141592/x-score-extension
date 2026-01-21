@@ -57,7 +57,7 @@ Score = Σ (weight × P(action))
 
 1. このリポジトリをクローンまたはダウンロード
    ```bash
-   git clone https://github.com/YOUR_USERNAME/x-score-extension.git
+   git clone https://github.com/nyanko3141592/x-score-extension.git
    ```
 
 2. Chromeで `chrome://extensions` を開く
