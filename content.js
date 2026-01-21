@@ -50,17 +50,85 @@
   function extractViewCount(tweetElement) {
     const analyticsLink = tweetElement.querySelector('a[href*="/analytics"]');
     if (analyticsLink) {
-      return extractNumberFromLabel(analyticsLink.textContent || analyticsLink.getAttribute('aria-label'));
+      const analyticsCount = extractNumberFromLabel(
+        analyticsLink.textContent || analyticsLink.getAttribute('aria-label')
+      );
+      if (analyticsCount > 0) return analyticsCount;
+      const analyticsInner = analyticsLink.querySelector('[dir="ltr"]');
+      if (analyticsInner) {
+        return extractNumberFromLabel(analyticsInner.textContent);
+      }
     }
 
     const viewCountElement = tweetElement.querySelector('[data-testid="viewCount"]');
     if (viewCountElement) {
-      return extractNumberFromLabel(viewCountElement.textContent || viewCountElement.getAttribute('aria-label'));
+      const viewCount = extractNumberFromLabel(
+        viewCountElement.textContent || viewCountElement.getAttribute('aria-label')
+      );
+      if (viewCount > 0) return viewCount;
+      const viewInner = viewCountElement.querySelector('[dir="ltr"]');
+      if (viewInner) return extractNumberFromLabel(viewInner.textContent);
     }
 
-    const viewLabel = tweetElement.querySelector('[aria-label*="Views"], [aria-label*="表示"]');
+    const viewLabel = tweetElement.querySelector('[aria-label*="Views"], [aria-label*="表示回数"], [aria-label*="表示"]');
     if (viewLabel) {
-      return extractNumberFromLabel(viewLabel.getAttribute('aria-label') || viewLabel.textContent);
+      const labelCount = extractNumberFromLabel(
+        viewLabel.getAttribute('aria-label') || viewLabel.textContent
+      );
+      if (labelCount > 0) return labelCount;
+    }
+
+    // Detail view: parse view count from action group aria-label
+    let scope = tweetElement;
+    for (let i = 0; i < 6 && scope; i++) {
+      const actionGroup = scope.querySelector('[role="group"][aria-label*="件の表示"], [role="group"][aria-label*="Views"]');
+      if (actionGroup) {
+        const ariaLabel = actionGroup.getAttribute('aria-label') || '';
+        const viewMatch = ariaLabel.match(/([0-9,\.]+)\s*(?:件の表示|Views)/);
+        if (viewMatch) {
+          return parseEngagementNumber(viewMatch[1]);
+        }
+      }
+      scope = scope.parentElement;
+    }
+
+    // Detail view fallback: "件の表示" label with adjacent count
+    const spans = tweetElement.querySelectorAll('span');
+    for (const span of spans) {
+      const text = (span.textContent || '').trim();
+      if (text !== '件の表示' && text.toLowerCase() !== 'views') continue;
+
+      let container = span.parentElement;
+      for (let i = 0; i < 5 && container; i++) {
+        const transitionEl = container.querySelector('[data-testid="app-text-transition-container"]');
+        if (transitionEl) {
+          const count = extractNumberFromLabel(transitionEl.textContent);
+          if (count > 0) return count;
+        }
+
+        const prev = container.previousElementSibling;
+        if (prev) {
+          const prevTransition = prev?.querySelector?.('[data-testid="app-text-transition-container"]') || null;
+          if (prevTransition) {
+            const count = extractNumberFromLabel(prevTransition.textContent);
+            if (count > 0) return count;
+          }
+          const prevCount = extractNumberFromLabel(prev.textContent);
+          if (prevCount > 0) return prevCount;
+        }
+
+        container = container.parentElement;
+      }
+    }
+
+    // Detail view fallback: transition container near "件の表示"
+    const transitionContainers = tweetElement.querySelectorAll('[data-testid="app-text-transition-container"]');
+    for (const container of transitionContainers) {
+      const parentText = (container.parentElement?.textContent || '').trim();
+      if (parentText.includes('件の表示') || parentText.toLowerCase().includes('views')) {
+        const count = extractNumberFromLabel(container.textContent);
+        if (count > 0) return count;
+      }
     }
 
     return 0;
