@@ -501,7 +501,8 @@
     const tweetId = getTweetId(tweetElement);
     const previousId = tweetElement.dataset.xScoreId || '';
 
-    if (previousId && tweetId && previousId !== tweetId) {
+    // Handle recycled elements: clear old badge if ID changed or became unknown
+    if (previousId && (tweetId === '' || previousId !== tweetId)) {
       const existingBadge = tweetElement.querySelector('.x-score-badge');
       if (existingBadge) {
         existingBadge.remove();
@@ -511,9 +512,9 @@
 
     if (processedTweets.has(tweetElement)) return;
     processedTweets.add(tweetElement);
-    if (tweetId) {
-      tweetElement.dataset.xScoreId = tweetId;
-    }
+    
+    // Always update ID to match current element content (including empty id)
+    tweetElement.dataset.xScoreId = tweetId;
 
     const tweetData = extractTweetData(tweetElement);
 
