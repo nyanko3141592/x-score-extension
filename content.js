@@ -31,17 +31,162 @@
 
   const processedTweets = new WeakSet();
 
+  function extractNumberFromLabel(label) {
+    if (!label) return 0;
+    const match = label.match(/([0-9][0-9,\.\s]*[KkMmGg億万千]?)/);
+    if (!match) return 0;
+    return parseEngagementNumber(match[1]);
+  }
+
+  function extractCountFromButton(buttonElement) {
+    if (!buttonElement) return 0;
+    const countElement = buttonElement.querySelector('[dir="ltr"]');
+    if (countElement && countElement.textContent) {
+      return parseEngagementNumber(countElement.textContent);
+    }
+    return extractNumberFromLabel(buttonElement.getAttribute('aria-label'));
+  }
+
+  function extractViewCount(tweetElement) {
+    const analyticsLink = tweetElement.querySelector('a[href*="/analytics"]');
+    if (analyticsLink) {
+      const analyticsCount = extractNumberFromLabel(
+        analyticsLink.textContent || analyticsLink.getAttribute('aria-label')
+      );
+      if (analyticsCount > 0) return analyticsCount;
+      const analyticsInner = analyticsLink.querySelector('[dir="ltr"]');
+      if (analyticsInner) {
+        return extractNumberFromLabel(analyticsInner.textContent);
+      }
+    }
+
+    const viewCountElement = tweetElement.querySelector('[data-testid="viewCount"]');
+    if (viewCountElement) {
+      const viewCount = extractNumberFromLabel(
+        viewCountElement.textContent || viewCountElement.getAttribute('aria-label')
+      );
+      if (viewCount > 0) return viewCount;
+      const viewInner = viewCountElement.querySelector('[dir="ltr"]');
+      if (viewInner) return extractNumberFromLabel(viewInner.textContent);
+    }
+
+    const viewLabel = tweetElement.querySelector('[aria-label*="Views"], [aria-label*="表示回数"], [aria-label*="表示"]');
+    if (viewLabel) {
+      const labelCount = extractNumberFromLabel(
+        viewLabel.getAttribute('aria-label') || viewLabel.textContent
+      );
+      if (labelCount > 0) return labelCount;
+    }
+
+    // Detail view: parse view count from action group aria-label
+    let scope = tweetElement;
+    for (let i = 0; i < 6 && scope; i++) {
+      const actionGroup = scope.querySelector('[role="group"][aria-label*="件の表示"], [role="group"][aria-label*="Views"]');
+      if (actionGroup) {
+        const ariaLabel = actionGroup.getAttribute('aria-label') || '';
+        const viewMatch = ariaLabel.match(/([0-9,\.]+)\s*(?:件の表示|Views)/);
+        if (viewMatch) {
+          return parseEngagementNumber(viewMatch[1]);
+        }
+      }
+      scope = scope.parentElement;
+    }
+
+    // Detail view fallback: "件の表示" label with adjacent count
+    const spans = tweetElement.querySelectorAll('span');
+    for (const span of spans) {
+      const text = (span.textContent || '').trim();
+      if (text !== '件の表示' && text.toLowerCase() !== 'views') continue;
+
+      let container = span.parentElement;
+      for (let i = 0; i < 5 && container; i++) {
+        const transitionEl = container.querySelector('[data-testid="app-text-transition-container"]');
+        if (transitionEl) {
+          const count = extractNumberFromLabel(transitionEl.textContent);
+          if (count > 0) return count;
+        }
+
+        const prev = container.previousElementSibling;
+        if (prev) {
+          const prevTransition = prev?.querySelector?.('[data-testid="app-text-transition-container"]') || null;
+          if (prevTransition) {
+            const count = extractNumberFromLabel(prevTransition.textContent);
+            if (count > 0) return count;
+          }
+          const prevCount = extractNumberFromLabel(prev.textContent);
+          if (prevCount > 0) return prevCount;
+        }
+
+        container = container.parentElement;
+      }
+    }
+
+    // Detail view fallback: transition container near "件の表示"
+    const transitionContainers = tweetElement.querySelectorAll('[data-testid="app-text-transition-container"]');
+    for (const container of transitionContainers) {
+      const parentText = (container.parentElement?.textContent || '').trim();
+      if (parentText.includes('件の表示') || parentText.toLowerCase().includes('views')) {
+        const count = extractNumberFromLabel(container.textContent);
+        if (count > 0) return count;
+      }
+    }
+
+    return 0;
+  }
+
+  function getTweetId(tweetElement) {
+    const statusLink = tweetElement.querySelector('a[href*="/status/"]');
+    const href = statusLink?.getAttribute('href') || '';
+    const match = href.match(/\/status\/(\d+)/);
+    return match ? match[1] : '';
+  }
+
   // Parse engagement numbers (e.g., "1.2K" -> 1200)
   function parseEngagementNumber(text) {
-    if (!text) return 0;
-    text = text.trim().replace(/,/g, '');
-    if (text.endsWith('K') || text.endsWith('k')) {
-      return parseFloat(text) * 1000;
+    if (text === null || text === undefined) return 0;
+    // Remove commas, control characters, and invisible characters
+    const normalized = String(text).trim()
+      .replace(/,/g, '')
+      .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF]/g, '');
+
+    let value = 0;
+    let handled = false;
+
+    const japaneseUnits = [
+      ['億', 100000000],
+      ['万', 10000],
+      ['千', 1000]
+    ];
+
+    for (const [unit, multiplier] of japaneseUnits) {
+      if (normalized.includes(unit)) {
+        value = parseFloat(normalized.replace(new RegExp(unit, 'g'), '')) * multiplier;
+        handled = true;
+        break;
+      }
     }
-    if (text.endsWith('M') || text.endsWith('m')) {
-      return parseFloat(text) * 1000000;
+
+    if (!handled) {
+      // Latin units (K/k, M/m, G/g)
+      const unitMatch = normalized.match(/^([0-9]+\.?[0-9]*)([KkMmGg])$/);
+      if (unitMatch) {
+        const val = parseFloat(unitMatch[1]);
+        const unit = unitMatch[2].toLowerCase();
+        if (Number.isFinite(val)) {
+          if (unit === 'k') value = val * 1000;
+          if (unit === 'm') value = val * 1000000;
+          if (unit === 'g') value = val * 1000000000;
+          handled = true;
+        }
+      }
     }
-    return parseInt(text) || 0;
+
+    if (!handled) {
+      const numeric = parseFloat(normalized);
+      value = Number.isFinite(numeric) ? numeric : 0;
+    }
+
+    return Math.round(value);
   }
 
   // Extract tweet data from DOM
@@ -68,37 +213,15 @@
 
     // Get engagement metrics
     const replyButton = tweetElement.querySelector('[data-testid="reply"]');
-    const retweetButton = tweetElement.querySelector('[data-testid="retweet"]');
-    const likeButton = tweetElement.querySelector('[data-testid="like"]');
+    const retweetButton = tweetElement.querySelector('[data-testid="retweet"], [data-testid="unretweet"], [data-testid="repost"]');
+    const likeButton = tweetElement.querySelector('[data-testid="like"], [data-testid="unlike"]');
     const bookmarkButton = tweetElement.querySelector('[data-testid="bookmark"]');
 
-    // Try multiple selectors for view count
-    const viewsElement = tweetElement.querySelector('a[href*="/analytics"]') ||
-                         tweetElement.querySelector('[data-testid="app-text-transition-container"]');
-
-    if (replyButton) {
-      const replyCount = replyButton.querySelector('[dir="ltr"]');
-      data.replies = parseEngagementNumber(replyCount?.textContent);
-    }
-
-    if (retweetButton) {
-      const retweetCount = retweetButton.querySelector('[dir="ltr"]');
-      data.reposts = parseEngagementNumber(retweetCount?.textContent);
-    }
-
-    if (likeButton) {
-      const likeCount = likeButton.querySelector('[dir="ltr"]');
-      data.likes = parseEngagementNumber(likeCount?.textContent);
-    }
-
-    if (bookmarkButton) {
-      const bookmarkCount = bookmarkButton.querySelector('[dir="ltr"]');
-      data.bookmarks = parseEngagementNumber(bookmarkCount?.textContent);
-    }
-
-    if (viewsElement) {
-      data.views = parseEngagementNumber(viewsElement.textContent);
-    }
+    data.replies = extractCountFromButton(replyButton);
+    data.reposts = extractCountFromButton(retweetButton);
+    data.likes = extractCountFromButton(likeButton);
+    data.bookmarks = extractCountFromButton(bookmarkButton);
+    data.views = extractViewCount(tweetElement);
 
     // Check for media
     data.hasMedia = !!tweetElement.querySelector('[data-testid="tweetPhoto"]');
@@ -473,8 +596,23 @@
 
   // Process a single tweet
   function processTweet(tweetElement) {
+    const tweetId = getTweetId(tweetElement);
+    const previousId = tweetElement.dataset.xScoreId || '';
+
+    // Handle recycled elements: clear old badge if ID changed or became unknown
+    if (previousId && (tweetId === '' || previousId !== tweetId)) {
+      const existingBadge = tweetElement.querySelector('.x-score-badge');
+      if (existingBadge) {
+        existingBadge.remove();
+      }
+      processedTweets.delete(tweetElement);
+    }
+
     if (processedTweets.has(tweetElement)) return;
     processedTweets.add(tweetElement);
+    
+    // Always update ID to match current element content (including empty id)
+    tweetElement.dataset.xScoreId = tweetId;
 
     const tweetData = extractTweetData(tweetElement);
 
