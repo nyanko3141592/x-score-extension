@@ -387,14 +387,14 @@
     badge.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      showScorePopup(badge, scoreData);
+      showScorePopup(badge, scoreData, e);
     });
 
     return badge;
   }
 
   // Show detailed popup
-  function showScorePopup(badge, scoreData) {
+  function showScorePopup(badge, scoreData, event) {
     // Remove existing popup
     const existingPopup = document.querySelector('.x-score-popup');
     if (existingPopup) {
@@ -515,20 +515,50 @@
 
     // Position popup
     const rect = badge.getBoundingClientRect();
+    const isUpperHalf = rect.top < window.innerHeight / 2;
+
     popup.style.position = 'fixed';
-    popup.style.top = `${rect.bottom + 8}px`;
-    popup.style.left = `${rect.left}px`;
     popup.style.zIndex = '10000';
+
+    if (isUpperHalf && event) {
+      // If in upper half, position relative to mouse cursor with offset
+      popup.style.left = `${event.clientX + 20}px`;
+      popup.style.top = `${event.clientY}px`;
+    } else {
+      // Default position below the badge
+      popup.style.top = `${rect.bottom + 8}px`;
+      popup.style.left = `${rect.left}px`;
+    }
 
     document.body.appendChild(popup);
 
     // Adjust position if off-screen
-    const popupRect = popup.getBoundingClientRect();
+    let popupRect = popup.getBoundingClientRect();
+
+    // Ensure top is within viewport
+    if (popupRect.top < 0) {
+      popup.style.top = '8px';
+    }
+
+    // Ensure right is within viewport
     if (popupRect.right > window.innerWidth) {
       popup.style.left = `${window.innerWidth - popupRect.width - 16}px`;
     }
+
+    // Ensure bottom is within viewport
+    popupRect = popup.getBoundingClientRect(); // Re-measure after top/left adjustments
     if (popupRect.bottom > window.innerHeight) {
-      popup.style.top = `${rect.top - popupRect.height - 8}px`;
+      if (isUpperHalf) {
+        // If it's still too long, just keep it at the top and let it be cut at bottom or handle scroll
+        popup.style.top = `${window.innerHeight - popupRect.height - 8}px`;
+        // Re-check top again
+        if (parseFloat(popup.style.top) < 0) popup.style.top = '8px';
+      } else {
+        // Position above the badge
+        popup.style.top = `${rect.top - popupRect.height - 8}px`;
+        // Re-check top again
+        if (parseFloat(popup.style.top) < 0) popup.style.top = '8px';
+      }
     }
 
     // Close on click outside
