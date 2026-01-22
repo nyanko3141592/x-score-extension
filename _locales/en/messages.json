@@ -1,0 +1,124 @@
+{
+  "extName": {
+    "message": "X Score - Tweet Engagement Predictor",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Predict tweet engagement scores based on X's algorithm",
+    "description": "Extension description"
+  },
+  "algorithmScore": {
+    "message": "Algorithm Score",
+    "description": "Title of the score popup"
+  },
+  "premiumVerified": {
+    "message": "Premium Verified (x$BOOST$ boost)",
+    "description": "Badge shown for verified users",
+    "placeholders": {
+      "boost": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "engagementMetrics": {
+    "message": "Engagement Metrics",
+    "description": "Section title for engagement metrics"
+  },
+  "likes": {
+    "message": "Likes",
+    "description": "Likes label"
+  },
+  "replies": {
+    "message": "Replies",
+    "description": "Replies label"
+  },
+  "reposts": {
+    "message": "Reposts",
+    "description": "Reposts label"
+  },
+  "views": {
+    "message": "Views",
+    "description": "Views label"
+  },
+  "bookmarks": {
+    "message": "Bookmarks",
+    "description": "Bookmarks label"
+  },
+  "engagementRate": {
+    "message": "Engagement Rate",
+    "description": "Engagement rate label"
+  },
+  "scoreBreakdown": {
+    "message": "Score Breakdown (Official Weights)",
+    "description": "Section title for score breakdown"
+  },
+  "replyWithEngagement": {
+    "message": "Reply→Conversation (x75)",
+    "description": "Score breakdown item"
+  },
+  "reply": {
+    "message": "Reply (x13.5)",
+    "description": "Score breakdown item"
+  },
+  "profileClickEngagement": {
+    "message": "Profile Click (x12)",
+    "description": "Score breakdown item"
+  },
+  "conversationEngagement": {
+    "message": "Conversation (x11)",
+    "description": "Score breakdown item"
+  },
+  "dwellTime": {
+    "message": "Dwell Time (x10)",
+    "description": "Score breakdown item"
+  },
+  "repost": {
+    "message": "Repost (x1)",
+    "description": "Score breakdown item"
+  },
+  "favorite": {
+    "message": "Like (x0.5)",
+    "description": "Score breakdown item"
+  },
+  "videoView": {
+    "message": "Video View (x0.005)",
+    "description": "Score breakdown item"
+  },
+  "content": {
+    "message": "Content",
+    "description": "Section title for content analysis"
+  },
+  "characterCount": {
+    "message": "Characters",
+    "description": "Character count label"
+  },
+  "hashtags": {
+    "message": "Hashtags",
+    "description": "Hashtags label"
+  },
+  "mentions": {
+    "message": "Mentions",
+    "description": "Mentions label"
+  },
+  "media": {
+    "message": "Media",
+    "description": "Media label"
+  },
+  "mediaVideo": {
+    "message": "Video",
+    "description": "Video media type"
+  },
+  "mediaImage": {
+    "message": "Image",
+    "description": "Image media type"
+  },
+  "mediaNone": {
+    "message": "None",
+    "description": "No media"
+  },
+  "footer": {
+    "message": "Based on X Algorithm (xai-org/x-algorithm)",
+    "description": "Footer text"
+  }
+}

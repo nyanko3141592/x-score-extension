@@ -1,0 +1,124 @@
+{
+  "extName": {
+    "message": "X Score - ツイートエンゲージメント予測",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Xのアルゴリズムに基づいてツイートのエンゲージメントスコアを予測します",
+    "description": "Extension description"
+  },
+  "algorithmScore": {
+    "message": "Algorithm Score",
+    "description": "Title of the score popup"
+  },
+  "premiumVerified": {
+    "message": "Premium認証済み (x$BOOST$ boost)",
+    "description": "Badge shown for verified users",
+    "placeholders": {
+      "boost": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "engagementMetrics": {
+    "message": "Engagement Metrics",
+    "description": "Section title for engagement metrics"
+  },
+  "likes": {
+    "message": "いいね",
+    "description": "Likes label"
+  },
+  "replies": {
+    "message": "リプライ",
+    "description": "Replies label"
+  },
+  "reposts": {
+    "message": "リポスト",
+    "description": "Reposts label"
+  },
+  "views": {
+    "message": "表示回数",
+    "description": "Views label"
+  },
+  "bookmarks": {
+    "message": "ブックマーク",
+    "description": "Bookmarks label"
+  },
+  "engagementRate": {
+    "message": "エンゲージ率",
+    "description": "Engagement rate label"
+  },
+  "scoreBreakdown": {
+    "message": "Score Breakdown (Official Weights)",
+    "description": "Section title for score breakdown"
+  },
+  "replyWithEngagement": {
+    "message": "リプライ→会話 (x75)",
+    "description": "Score breakdown item"
+  },
+  "reply": {
+    "message": "リプライ (x13.5)",
+    "description": "Score breakdown item"
+  },
+  "profileClickEngagement": {
+    "message": "プロフィール (x12)",
+    "description": "Score breakdown item"
+  },
+  "conversationEngagement": {
+    "message": "会話参加 (x11)",
+    "description": "Score breakdown item"
+  },
+  "dwellTime": {
+    "message": "滞在時間 (x10)",
+    "description": "Score breakdown item"
+  },
+  "repost": {
+    "message": "リポスト (x1)",
+    "description": "Score breakdown item"
+  },
+  "favorite": {
+    "message": "いいね (x0.5)",
+    "description": "Score breakdown item"
+  },
+  "videoView": {
+    "message": "動画視聴 (x0.005)",
+    "description": "Score breakdown item"
+  },
+  "content": {
+    "message": "Content",
+    "description": "Section title for content analysis"
+  },
+  "characterCount": {
+    "message": "文字数",
+    "description": "Character count label"
+  },
+  "hashtags": {
+    "message": "ハッシュタグ",
+    "description": "Hashtags label"
+  },
+  "mentions": {
+    "message": "メンション",
+    "description": "Mentions label"
+  },
+  "media": {
+    "message": "メディア",
+    "description": "Media label"
+  },
+  "mediaVideo": {
+    "message": "動画",
+    "description": "Video media type"
+  },
+  "mediaImage": {
+    "message": "画像",
+    "description": "Image media type"
+  },
+  "mediaNone": {
+    "message": "なし",
+    "description": "No media"
+  },
+  "footer": {
+    "message": "Based on X Algorithm (xai-org/x-algorithm)",
+    "description": "Footer text"
+  }
+}

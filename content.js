@@ -414,14 +414,14 @@
       .sort((a, b) => b[1].contribution - a[1].contribution);
 
     const actionLabels = {
-      replyWithEngagement: 'リプライ→会話 (x75)',
-      reply: 'リプライ (x13.5)',
-      profileClickEngagement: 'プロフィール (x12)',
-      conversationEngagement: '会話参加 (x11)',
-      dwell: '滞在時間 (x10)',
-      repost: 'リポスト (x1)',
-      favorite: 'いいね (x0.5)',
-      videoView: '動画視聴 (x0.005)'
+      replyWithEngagement: chrome.i18n.getMessage('replyWithEngagement'),
+      reply: chrome.i18n.getMessage('reply'),
+      profileClickEngagement: chrome.i18n.getMessage('profileClickEngagement'),
+      conversationEngagement: chrome.i18n.getMessage('conversationEngagement'),
+      dwell: chrome.i18n.getMessage('dwellTime'),
+      repost: chrome.i18n.getMessage('repost'),
+      favorite: chrome.i18n.getMessage('favorite'),
+      videoView: chrome.i18n.getMessage('videoView')
     };
 
     const breakdownHtml = sortedBreakdown.map(([action, data]) => `
@@ -434,50 +434,56 @@
       </div>
     `).join('');
 
+    const mediaType = scoreData.hasVideo
+      ? chrome.i18n.getMessage('mediaVideo')
+      : scoreData.hasMedia
+        ? chrome.i18n.getMessage('mediaImage')
+        : chrome.i18n.getMessage('mediaNone');
+
     popup.innerHTML = `
       <div class="x-score-popup-header">
-        <span class="x-score-popup-title">Algorithm Score</span>
+        <span class="x-score-popup-title">${chrome.i18n.getMessage('algorithmScore')}</span>
         <span class="x-score-popup-score ${getScoreClass(scoreData.total)}">${scoreData.total.toFixed(2)}</span>
       </div>
 
       ${scoreData.isVerified ? `
       <div class="x-score-verified-badge">
-        Premium認証済み (x${scoreData.verifiedBoost} boost)
+        ${chrome.i18n.getMessage('premiumVerified', [scoreData.verifiedBoost.toString()])}
       </div>
       ` : ''}
 
       <div class="x-score-popup-section">
-        <div class="x-score-popup-section-title">Engagement Metrics</div>
+        <div class="x-score-popup-section-title">${chrome.i18n.getMessage('engagementMetrics')}</div>
         <div class="x-score-popup-grid">
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">いいね</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('likes')}</span>
             <span class="x-score-popup-value">${formatNumber(scoreData.engagement.likes)}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">リプライ</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('replies')}</span>
             <span class="x-score-popup-value">${formatNumber(scoreData.engagement.replies)}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">リポスト</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('reposts')}</span>
             <span class="x-score-popup-value">${formatNumber(scoreData.engagement.reposts)}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">表示回数</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('views')}</span>
             <span class="x-score-popup-value">${formatNumber(scoreData.engagement.views)}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">ブックマーク</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('bookmarks')}</span>
             <span class="x-score-popup-value">${formatNumber(scoreData.engagement.bookmarks)}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">エンゲージ率</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('engagementRate')}</span>
             <span class="x-score-popup-value">${engRate}</span>
           </div>
         </div>
       </div>
 
       <div class="x-score-popup-section">
-        <div class="x-score-popup-section-title">Score Breakdown (Official Weights)</div>
+        <div class="x-score-popup-section-title">${chrome.i18n.getMessage('scoreBreakdown')}</div>
         <div class="x-score-breakdown-list">
           ${breakdownHtml}
         </div>
@@ -487,29 +493,29 @@
       </div>
 
       <div class="x-score-popup-section">
-        <div class="x-score-popup-section-title">Content</div>
+        <div class="x-score-popup-section-title">${chrome.i18n.getMessage('content')}</div>
         <div class="x-score-popup-grid">
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">文字数</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('characterCount')}</span>
             <span class="x-score-popup-value">${scoreData.textFeatures.length}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">ハッシュタグ</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('hashtags')}</span>
             <span class="x-score-popup-value">${scoreData.textFeatures.hashtags}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">メンション</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('mentions')}</span>
             <span class="x-score-popup-value">${scoreData.textFeatures.mentions}</span>
           </div>
           <div class="x-score-popup-item">
-            <span class="x-score-popup-label">メディア</span>
-            <span class="x-score-popup-value">${scoreData.hasVideo ? '動画' : scoreData.hasMedia ? '画像' : 'なし'}</span>
+            <span class="x-score-popup-label">${chrome.i18n.getMessage('media')}</span>
+            <span class="x-score-popup-value">${mediaType}</span>
           </div>
         </div>
       </div>
 
       <div class="x-score-popup-footer">
-        Based on X Algorithm (xai-org/x-algorithm)
+        ${chrome.i18n.getMessage('footer')}
       </div>
     `;
 
