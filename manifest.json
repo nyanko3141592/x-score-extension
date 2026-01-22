@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "X Score - Tweet Engagement Predictor",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "Xのアルゴリズムに基づいてツイートのエンゲージメントスコアを予測します",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
   "permissions": [],
   "host_permissions": [
     "https://x.com/*",
