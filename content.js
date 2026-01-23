@@ -391,42 +391,51 @@
     `;
 
     // Position popup
-    const rect = badge.getBoundingClientRect();
-    popup.style.position = 'fixed';
-    popup.style.top = `${rect.bottom + 8}px`;
-    popup.style.left = `${rect.left}px`;
-    popup.style.zIndex = '10000';
-
     document.body.appendChild(popup);
 
-    // Adjust position if off-screen
+    const rect = badge.getBoundingClientRect();
     const popupRect = popup.getBoundingClientRect();
-    if (popupRect.right > window.innerWidth) {
-      popup.style.left = `${window.innerWidth - popupRect.width - 16}px`;
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
+
+    // Use absolute positioning so it moves with the page
+    popup.style.position = 'absolute';
+    popup.style.zIndex = '10000';
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const popupHeight = popupRect.height;
+    
+    // Determine vertical position:
+    // Prefer below if there is enough space, or if there is more space below than above.
+    if (spaceBelow >= popupHeight || spaceBelow >= spaceAbove) {
+      // Show below
+      popup.style.top = `${rect.bottom + scrollY + 8}px`;
+    } else {
+      // Show above
+      popup.style.top = `${rect.top + scrollY - popupHeight - 8}px`;
     }
-    if (popupRect.bottom > window.innerHeight) {
-      popup.style.top = `${rect.top - popupRect.height - 8}px`;
+
+    // Determine horizontal position
+    let leftPos = rect.left + scrollX;
+
+    // Adjust position if off-screen (right side)
+    if (rect.left + popupRect.width > window.innerWidth) {
+      leftPos = (window.innerWidth + scrollX) - popupRect.width - 16;
     }
+    popup.style.left = `${leftPos}px`;
 
     // Close on click outside
     const closePopup = (e) => {
       if (!popup.contains(e.target) && e.target !== badge) {
         popup.remove();
         document.removeEventListener('click', closePopup);
-        window.removeEventListener('scroll', closeOnScroll);
       }
-    };
-
-    // Close on scroll
-    const closeOnScroll = () => {
-      popup.remove();
-      document.removeEventListener('click', closePopup);
-      window.removeEventListener('scroll', closeOnScroll);
     };
 
     setTimeout(() => {
       document.addEventListener('click', closePopup);
-      window.addEventListener('scroll', closeOnScroll, { passive: true });
+      // Removed scroll listener to prevent menu from closing on scroll
     }, 0);
   }
 
