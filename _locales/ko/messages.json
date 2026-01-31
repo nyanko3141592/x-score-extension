@@ -1,0 +1,124 @@
+{
+  "extName": {
+    "message": "X Score - 트윗 참여도 예측",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "X의 알고리즘을 기반으로 트윗 참여도 점수를 예측합니다",
+    "description": "Extension description"
+  },
+  "algorithmScore": {
+    "message": "알고리즘 점수",
+    "description": "Title of the score popup"
+  },
+  "premiumVerified": {
+    "message": "프리미엄 인증됨 (x$BOOST$ 부스트)",
+    "description": "Badge shown for verified users",
+    "placeholders": {
+      "boost": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "engagementMetrics": {
+    "message": "참여도 지표",
+    "description": "Section title for engagement metrics"
+  },
+  "likes": {
+    "message": "마음에 들어요",
+    "description": "Likes label"
+  },
+  "replies": {
+    "message": "답글",
+    "description": "Replies label"
+  },
+  "reposts": {
+    "message": "리포스트",
+    "description": "Reposts label"
+  },
+  "views": {
+    "message": "조회수",
+    "description": "Views label"
+  },
+  "bookmarks": {
+    "message": "북마크",
+    "description": "Bookmarks label"
+  },
+  "engagementRate": {
+    "message": "참여율",
+    "description": "Engagement rate label"
+  },
+  "scoreBreakdown": {
+    "message": "점수 분석 (공식 가중치)",
+    "description": "Section title for score breakdown"
+  },
+  "replyWithEngagement": {
+    "message": "답글→대화 (x75)",
+    "description": "Score breakdown item"
+  },
+  "reply": {
+    "message": "답글 (x13.5)",
+    "description": "Score breakdown item"
+  },
+  "profileClickEngagement": {
+    "message": "프로필 클릭 (x12)",
+    "description": "Score breakdown item"
+  },
+  "conversationEngagement": {
+    "message": "대화 참여 (x11)",
+    "description": "Score breakdown item"
+  },
+  "dwellTime": {
+    "message": "머문 시간 (x10)",
+    "description": "Score breakdown item"
+  },
+  "repost": {
+    "message": "리포스트 (x1)",
+    "description": "Score breakdown item"
+  },
+  "favorite": {
+    "message": "마음에 들어요 (x0.5)",
+    "description": "Score breakdown item"
+  },
+  "videoView": {
+    "message": "동영상 조회 (x0.005)",
+    "description": "Score breakdown item"
+  },
+  "content": {
+    "message": "콘텐츠",
+    "description": "Section title for content analysis"
+  },
+  "characterCount": {
+    "message": "글자 수",
+    "description": "Character count label"
+  },
+  "hashtags": {
+    "message": "해시태그",
+    "description": "Hashtags label"
+  },
+  "mentions": {
+    "message": "언급",
+    "description": "Mentions label"
+  },
+  "media": {
+    "message": "미디어",
+    "description": "Media label"
+  },
+  "mediaVideo": {
+    "message": "동영상",
+    "description": "Video media type"
+  },
+  "mediaImage": {
+    "message": "이미지",
+    "description": "Image media type"
+  },
+  "mediaNone": {
+    "message": "없음",
+    "description": "No media"
+  },
+  "footer": {
+    "message": "X 알고리즘 기반 (xai-org/x-algorithm)",
+    "description": "Footer text"
+  }
+}
