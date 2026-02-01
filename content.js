@@ -520,72 +520,51 @@
     `;
 
     // Position popup
-    const rect = badge.getBoundingClientRect();
-    const isUpperHalf = rect.top < window.innerHeight / 2;
-
-    popup.style.position = 'fixed';
-    popup.style.zIndex = '10000';
-
-    if (isUpperHalf && event) {
-      // If in upper half, position relative to mouse cursor with offset
-      popup.style.left = `${event.clientX + 20}px`;
-      popup.style.top = `${event.clientY}px`;
-    } else {
-      // Default position below the badge
-      popup.style.top = `${rect.bottom + 8}px`;
-      popup.style.left = `${rect.left}px`;
-    }
-
     document.body.appendChild(popup);
 
-    // Adjust position if off-screen
-    let popupRect = popup.getBoundingClientRect();
+    const rect = badge.getBoundingClientRect();
+    const popupRect = popup.getBoundingClientRect();
+    const scrollX = window.scrollX || window.pageXOffset;
+    const scrollY = window.scrollY || window.pageYOffset;
 
-    // Ensure top is within viewport
-    if (popupRect.top < 0) {
-      popup.style.top = '8px';
+    // Use absolute positioning so it moves with the page
+    popup.style.position = 'absolute';
+    popup.style.zIndex = '10000';
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const popupHeight = popupRect.height;
+    
+    // Determine vertical position:
+    // Prefer below if there is enough space, or if there is more space below than above.
+    if (spaceBelow >= popupHeight || spaceBelow >= spaceAbove) {
+      // Show below
+      popup.style.top = `${rect.bottom + scrollY + 8}px`;
+    } else {
+      // Show above
+      popup.style.top = `${rect.top + scrollY - popupHeight - 8}px`;
     }
 
-    // Ensure right is within viewport
-    if (popupRect.right > window.innerWidth) {
-      popup.style.left = `${window.innerWidth - popupRect.width - 16}px`;
-    }
+    // Determine horizontal position
+    let leftPos = rect.left + scrollX;
 
-    // Ensure bottom is within viewport
-    popupRect = popup.getBoundingClientRect(); // Re-measure after top/left adjustments
-    if (popupRect.bottom > window.innerHeight) {
-      if (isUpperHalf) {
-        // If it's still too long, just keep it at the top and let it be cut at bottom or handle scroll
-        popup.style.top = `${window.innerHeight - popupRect.height - 8}px`;
-        // Re-check top again
-        if (parseFloat(popup.style.top) < 0) popup.style.top = '8px';
-      } else {
-        // Position above the badge
-        popup.style.top = `${rect.top - popupRect.height - 8}px`;
-        // Re-check top again
-        if (parseFloat(popup.style.top) < 0) popup.style.top = '8px';
-      }
+    // Adjust position if off-screen (right side)
+    if (rect.left + popupRect.width > window.innerWidth) {
+      leftPos = (window.innerWidth + scrollX) - popupRect.width - 16;
     }
+    popup.style.left = `${leftPos}px`;
 
     // Close on click outside
     const closePopup = (e) => {
       if (!popup.contains(e.target) && e.target !== badge) {
         popup.remove();
         document.removeEventListener('click', closePopup);
-        window.removeEventListener('scroll', closeOnScroll);
       }
-    };
-
-    // Close on scroll
-    const closeOnScroll = () => {
-      popup.remove();
-      document.removeEventListener('click', closePopup);
-      window.removeEventListener('scroll', closeOnScroll);
     };
 
     setTimeout(() => {
       document.addEventListener('click', closePopup);
-      window.addEventListener('scroll', closeOnScroll, { passive: true });
+      // Removed scroll listener to prevent menu from closing on scroll
     }, 0);
   }
 
